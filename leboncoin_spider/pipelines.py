@@ -15,14 +15,23 @@ class LeboncoinSpiderPipeline(object):
         self.urls_seen = set()
 
         data = []
-        with open('url_seen.csv',  'r') as f:
-            reader = csv.DictReader(f, delimiter=',')
-            for line in reader:
-                value = list(line.items())[0][1]
-                self.urls_seen.add(value[0])
+        fn = 'url_seen.csv';
+        try:
+            file = open(fn, 'r')
+            with file as f:
+                reader = csv.DictReader(f, delimiter=',')
+                for line in reader:
+                    value = list(line.items())[0][1]
+                    self.urls_seen.add(value[0])
+        except IOError:
+            file = open(fn, 'w')
+            with open('url_seen.csv', 'a') as fp:
+                writer = csv.writer(fp, delimiter=',')
+                writer.writerow(['url','timestamp_added'])
 
     def write_url_seen(self,url):
         self.urls_seen.add(url)
+        print([url,datetime.now().timestamp()])
         with open('url_seen.csv', 'a') as fp:
             writer = csv.writer(fp, delimiter=',')
             writer.writerow([url,datetime.now().timestamp()])
