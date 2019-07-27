@@ -8,6 +8,7 @@ from datetime import datetime
 from scrapy.exceptions import DropItem
 import re
 import csv
+import time
 
 class LeboncoinSpiderPipeline(object):
 
@@ -22,7 +23,7 @@ class LeboncoinSpiderPipeline(object):
                 reader = csv.DictReader(f, delimiter=',')
                 for line in reader:
                     value = list(line.items())[0][1]
-                    self.urls_seen.add(value[0])
+                    self.urls_seen.add(value)
         except IOError:
             file = open(fn, 'w')
             with open('url_seen.csv', 'a') as fp:
@@ -31,19 +32,16 @@ class LeboncoinSpiderPipeline(object):
 
     def write_url_seen(self,url):
         self.urls_seen.add(url)
-        print([url,datetime.now().timestamp()])
         with open('url_seen.csv', 'a') as fp:
             writer = csv.writer(fp, delimiter=',')
             writer.writerow([url,datetime.now().timestamp()])
     
     def process_item(self, item, spider):
-        
         #remove duplicates
         if item['url'][0] in self.urls_seen:
-            raise DropItem("Duplicate item found: %s" % item)
+            raise DropItem("Duplicate item found: %s" % item['url'])
         else:
             self.write_url_seen(item['url'][0])
-            # self.urls_seen.add(item['url'][0])
             item['zipcode'] = item['city'][2]
             item['city'] = item['city'][0]
             if not re.match("^38", item['zipcode']):

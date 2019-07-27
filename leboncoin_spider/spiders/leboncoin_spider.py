@@ -109,6 +109,7 @@ class OfferSpider(scrapy.Spider):
 
         for city in cities.items():
             urls.append("https://www.leboncoin.fr/recherche/?category=9&locations="+str(city[1])+"&real_estate_type=1")
+            urls.append("https://www.leboncoin.fr/recherche/?category=9&locations="+str(city[1])+"&real_estate_type=2")
             urls.append("https://www.leboncoin.fr/recherche/?category=9&locations="+str(city[1])+"&real_estate_type=3")
         
         return urls
