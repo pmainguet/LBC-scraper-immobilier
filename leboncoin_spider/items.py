@@ -25,4 +25,5 @@ class Offer(scrapy.Item):
     description = scrapy.Field()
     price = scrapy.Field()
     siret_agence = scrapy.Field()
+    quartier = scrapy.Field()
     pass

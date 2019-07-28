@@ -12,6 +12,21 @@ import time
 
 class LeboncoinSpiderPipeline(object):
 
+    quartiers = [
+        'Monta',
+        'Rocheplaine',
+        'Moutonnée',
+        'Fiancey',
+        'Cuvilleux',
+        'Champaviotte',
+        'Prédieu',
+        'Pont de Vence',
+        'Barnave',
+        'Saint Robert',
+        'Champy',
+        'Vinoux',
+    ]
+    
     def __init__(self):
         self.urls_seen = set()
 
@@ -22,6 +37,7 @@ class LeboncoinSpiderPipeline(object):
             with file as f:
                 reader = csv.DictReader(f, delimiter=',')
                 for line in reader:
+                    #TODO: utiliser le dict directement plutôt que le transformer en liste
                     value = list(line.items())[0][1]
                     self.urls_seen.add(value)
         except IOError:
@@ -53,4 +69,8 @@ class LeboncoinSpiderPipeline(object):
             if item.get('surface'):
                 item['surface']=item['surface'][0].replace(' m²','')
                 item['price_surface']= int(item['price'])/int(item['surface'])
+            for q in self.quartiers):
+                if item['description'].find(q) >= 0:
+                    item['quartier'] = q
+                    break
             return item
